@@ -50,15 +50,15 @@ vrrp_instance {{ instance['name'] }}{
 {% if ansible_fqdn == instance['master'] %}
   state MASTER
   interface {{ instance['masterif'] }}
-  priority {{ instance['priorityanchor'] }}
+  priority {{ instance['masterpriorityanchor'] }}
 {% elif ansible_fqdn == instance['slave1'] %}
   state BACKUP
   interface {{ instance['slave1if'] }}
-  priority {{ instance['priorityanchor']|int - 1 }}
+  priority {{ instance['slave1priorityanchor']|int - 1 }}
 {% elif ansible_fqdn == instance['slave2'] %}
   state BACKUP
   interface {{ instance['slave2if'] }}
-  priority {{ instance['priorityanchor']|int - 2 }}
+  priority {{ instance['slave2priorityanchor']|int - 2 }}
 {% endif %}
   virtual_router_id {{ instance['routerid'] }}
 {% if instance['advertint'] is defined %}
