@@ -24,3 +24,10 @@
     shell: /bin/false
     system: yes
   when: keepalived_create_keepalived_script_user | bool
+
+- firewalld:
+    rich_rule: rule protocol value="vrrp" accept
+    permanent: yes
+    state: enabled
+    immediate: yes
+  when: keepalived_enable_vrrp_firewall | bool
