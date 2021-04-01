@@ -1,0 +1,87 @@
+! Configuration File for keepalived
+
+global_defs {
+{% if keepalived_notificationemails is defined %}
+  notification_email {
+{% for email in keepalived_notificationemails %}
+    {{ email }}
+{% endfor %}
+  }
+{% endif %}
+{% if keepalived_notification_email_from is defined %}
+   notification_email_from {{ keepalived_notification_email_from }}
+{% endif %}
+{% if keepalived_smtp_server is defined %}
+   smtp_server {{ keepalived_smtp_server }}
+{% endif %}
+{% if keepalived_smtp_connect_timeout is defined %}
+   smtp_connect_timeout {{ keepalived_smtp_connect_timeout }}
+{% endif %}
+   router_id {{ ansible_fqdn }}
+   vrrp_skip_check_adv_addr
+   vrrp_strict
+   vrrp_garp_interval 0
+   vrrp_gna_interval 0
+}
+
+{% if keepalived_vrrpinstances is defined %}
+vrrp_sync_group ANSIBLE {
+  group {
+{% for instance in keepalived_vrrpinstances %}
+    {{ instance['name'] }}
+{% endfor %}
+  }
+}
+{% endif %}
+
+{% for instance in keepalived_vrrpinstances %}
+{% if instance['keepalived_check_script'] is defined %}
+vrrp_script chk_{{ instance['name'] }} {
+  script       "{{ instance['keepalived_check_script'] }}"
+  interval 2   # check every 2 seconds
+  fall 2       # require 2 failures for KO
+  rise 2       # require 2 successes for OK
+}
+{% endif %}
+{% endfor %}
+
+{% for instance in keepalived_vrrpinstances %}
+vrrp_instance {{ instance['name'] }}{
+{% if ansible_fqdn == instance['master'] %}
+  state MASTER
+  interface {{ instance['masterif'] }}
+  priority {{ instance['priorityanchor'] }}
+{% elif ansible_fqdn == instance['slave1'] %}
+  state BACKUP
+  interface {{ instance['slave1if'] }}
+  priority {{ instance['priorityanchor']|int - 1 }}
+{% elif ansible_fqdn == instance['slave2'] %}
+  state BACKUP
+  interface {{ instance['slave2if'] }}
+  priority {{ instance['priorityanchor']|int - 2 }}
+{% endif %}
+  virtual_router_id {{ instance['routerid'] }}
+{% if instance['advertint'] is defined %}
+  advert_int {{ instance['advertint'] }}
+{% endif %}
+{% if instance['keepalived_check_script'] is defined %}
+  track_script {
+    chk_{{ instance['name'] }}
+  }
+{% endif %}
+{% if instance['keepalived_notify_script'] is defined %}
+  notify {{ instance['keepalived_notify_script'] }}
+{% endif %}
+{% if instance['authpass'] is defined %}
+  authentication {
+    auth_type PASS
+    auth_pass {{ instance['authpass'] }}
+  }
+{% endif %}
+  virtual_ipaddress {
+{% for ip in instance['vips'] %}
+    {{ ip }}
+{% endfor %}
+  }
+}
+{% endfor %}
