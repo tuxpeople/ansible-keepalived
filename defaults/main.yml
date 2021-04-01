@@ -2,6 +2,7 @@
 # keepalived_notification_email_from
 # keepalived_smtp_server
 # keepalived_smtp_connect_timeout
+# keepalived_create_keepalived_script_user
 # keepalived_vrrpinstances
 #   - name
 #     keepalived_notify_script

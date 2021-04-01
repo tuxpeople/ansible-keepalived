@@ -15,3 +15,12 @@
     group: root
     mode: 0644
   notify: Restart keepalived
+
+- name: Add script user
+  user:
+    name: keepalived_script
+    comment: 'keepalived script'
+    home: /nonexistent
+    shell: /bin/false
+    system: yes
+  when: keepalived_create_keepalived_script_user | bool
