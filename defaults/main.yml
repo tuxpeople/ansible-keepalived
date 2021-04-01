@@ -1,21 +1,21 @@
-keepalived_notificationemails
-keepalived_notification_email_from
-keepalived_smtp_server
-keepalived_smtp_connect_timeout
-keepalived_vrrpinstances
-  - name
-    keepalived_notify_script
-    keepalived_check_script
-    master
-    masterif
-    slave1
-    slave1if
-    slave2
-    slave2if
-    routerid
-    advertint
-    authpass
-    vips
-      - 
-      - 
-      - 
+# keepalived_notificationemails
+# keepalived_notification_email_from
+# keepalived_smtp_server
+# keepalived_smtp_connect_timeout
+# keepalived_vrrpinstances
+#   - name
+#     keepalived_notify_script
+#     keepalived_check_script
+#     master
+#     masterif
+#     slave1
+#     slave1if
+#     slave2
+#     slave2if
+#     routerid
+#     advertint
+#     authpass
+#     vips
+#       - 
+#       - 
+#       - 
