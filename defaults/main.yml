@@ -2,8 +2,8 @@
 # keepalived_notification_email_from
 # keepalived_smtp_server
 # keepalived_smtp_connect_timeout
-# keepalived_create_keepalived_script_user
-# keepalived_enable_vrrp_firewall
+keepalived_create_keepalived_script_user: false
+keepalived_enable_vrrp_firewall: false
 # keepalived_vrrpinstances
 #   - name
 #     keepalived_notify_script
