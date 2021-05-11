@@ -18,10 +18,10 @@ Note: Name of the servers must match names in the inventory.
           server1:
             interface: "eth0"
             priority: 200
-          server1:
+          server2:
             interface: "eth0"
             priority: 199
-          server2:
+          server3:
             interface: "ens192"
             priority: 198
         vips:
