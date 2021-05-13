@@ -46,20 +46,16 @@ vrrp_script chk_{{ instance['name'] }} {
 {% endfor %}
 
 {% for instance in keepalived_vrrpinstances %}
-vrrp_instance {{ instance['name'] }}{
-{% if ansible_fqdn == instance['master'] %}
+vrrp_instance {{ instance['name'] }} {
+{% if instance.servers[ansible_fqdn] is defined %}
+{% set server = instance.servers[ansible_fqdn] %}
+{% if ansible_fqdn == instance.master %}
   state MASTER
-  interface {{ instance['masterif'] }}
-  priority {{ instance['masterpriorityanchor'] }}
-{% elif ansible_fqdn == instance['slave1'] %}
+{% else %}
   state BACKUP
-  interface {{ instance['slave1if'] }}
-  priority {{ instance['slave1priorityanchor']|int - 1 }}
-{% elif ansible_fqdn == instance['slave2'] %}
-  state BACKUP
-  interface {{ instance['slave2if'] }}
-  priority {{ instance['slave2priorityanchor']|int - 2 }}
 {% endif %}
+  interface {{ server.interface }}
+  priority {{ server.priority }}
   virtual_router_id {{ instance['routerid'] }}
 {% if instance['advertint'] is defined %}
   advert_int {{ instance['advertint'] }}
@@ -84,4 +80,5 @@ vrrp_instance {{ instance['name'] }}{
 {% endfor %}
   }
 }
+{% endif %}
 {% endfor %}
