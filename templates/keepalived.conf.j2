@@ -17,7 +17,7 @@ global_defs {
 {% if keepalived_smtp_connect_timeout is defined %}
    smtp_connect_timeout {{ keepalived_smtp_connect_timeout }}
 {% endif %}
-   router_id {{ ansible_fqdn }}
+   router_id {{ ansible_hostname }}
    vrrp_skip_check_adv_addr
    vrrp_strict
    vrrp_garp_interval 0
@@ -47,9 +47,9 @@ vrrp_script chk_{{ instance['name'] }} {
 
 {% for instance in keepalived_vrrpinstances %}
 vrrp_instance {{ instance['name'] }} {
-{% if instance.servers[ansible_fqdn] is defined %}
-{% set server = instance.servers[ansible_fqdn] %}
-{% if ansible_fqdn == instance.master %}
+{% if instance.servers[ansible_hostname] is defined %}
+{% set server = instance.servers[ansible_hostname] %}
+{% if ansible_hostname == instance.master %}
   state MASTER
 {% else %}
   state BACKUP
